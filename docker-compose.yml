@@ -1,0 +1,28 @@
+version: '3.9'
+services: 
+  sensor-sim:
+    build: 
+      context: ../sensor-sim
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    networks: 
+      - app-network
+
+  pathfinding:
+    build:
+      context: ../pathfinding
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    networks:
+      - app-network
+
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
