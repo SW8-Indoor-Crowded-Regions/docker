@@ -8,6 +8,8 @@ services:
       - "8002:8002"
     networks: 
       - app-network
+    env_file:
+      - ../sensor-sim/.env
 
   pathfinding:
     build:
@@ -17,6 +19,8 @@ services:
       - "8001:8001"
     networks:
       - app-network
+    env_file:
+      - ../pathfinding/.env
 
   gateway:
     build:
@@ -26,6 +30,8 @@ services:
       - "8000:8000"
     networks:
       - app-network
+    env_file:
+      - ../gateway/.env
 
 networks:
   app-network:
