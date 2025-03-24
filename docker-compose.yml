@@ -1,5 +1,37 @@
-version: '3.9'
-services: 
+services:
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_LOG_LEVEL=ERROR
+    networks:
+      - shared-network
+
+  kafka:
+    image: docker.io/bitnami/kafka:2.8
+    ports:
+      - "9092:9092"
+    volumes:
+      - "./log4j.properties:/opt/bitnami/kafka/config/log4j.properties"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENERS=CLIENT://0.0.0.0:9093,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9093,EXTERNAL://:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_LOG4J_LOGGERS=kafka.controller=ERROR,kafka.producer.async.DefaultEventHandler=ERROR,state.change.logger=ERROR
+      - KAFKA_CFG_LOG_LEVEL=ERROR
+      - KAFKA_LOG4J_ROOT_LOGLEVEL=ERROR
+    depends_on:
+      - zookeeper
+    networks:
+      - shared-network
+
   sensor-sim:
     build: 
       context: ../sensor-sim
@@ -7,7 +39,7 @@ services:
     ports:
       - "8002:8002"
     networks: 
-      - app-network
+      - shared-network
     env_file:
       - ../sensor-sim/.env
 
@@ -18,7 +50,7 @@ services:
     ports:
       - "8001:8001"
     networks:
-      - app-network
+      - shared-network
     env_file:
       - ../pathfinding/.env
 
@@ -29,10 +61,16 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - app-network
+      - shared-network
     env_file:
       - ../gateway/.env
 
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+
 networks:
-  app-network:
+  shared-network:
     driver: bridge
