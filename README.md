@@ -7,7 +7,7 @@ Welcome to the brains of the operation — the `docker/` repo! This is your one-
 ## 📁 Project Structure
 
 Here’s how the repos should be structured locally:
-
+```
 root/
  │ 
  ├── docker/ -- This repo!
@@ -25,7 +25,7 @@ root/
  └── gateway/
         ├── .env 
         └── Dockerfile
-
+```
 
 Each service has its own Dockerfile. The `docker-compose.yml` in the `docker/` folder manages and connects all services.
 
