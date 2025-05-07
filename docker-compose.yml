@@ -64,6 +64,9 @@ services:
       - shared-network
     env_file:
       - ../gateway/.env
+    depends_on:
+      - pathfinding
+      - sensor-sim
 
 volumes:
   zookeeper_data:
